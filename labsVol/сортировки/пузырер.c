@@ -1,50 +1,47 @@
 #include <stdio.h>
-#include <omp.h>
 #include <stdlib.h>
+#include <omp.h>
 
-double getInserationSortTime(int n);
-
-void InserationSort(int arr[], int n)
+double getBubbleSortTime(int x);
+void swap(int *xp, int *yp)
 {
-	int i, j, temp;
-	for (i = 1; i < n; i++)
-	{
-		temp = arr[i];
-		for (j = i - 1; j >= 0; j--)
-		{
-			if (arr[j] < temp)
-				break;
-
-			arr[j + 1] = arr[j];
-			arr[j] = temp;
-		}
-	}
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
 }
 
-int main()
+void bubbleSort(int arr[], int x)
 {
-	for (int n = 10000; n <= 100000; n += 10000)
-	{
-		printf("%d;%lf\n", n, getInserationSortTime(n));
-	}
+    int i, j;
+    for (i = 0; i < x-1; i++)
 
-	return 0;
+
+        for (j = 0; j < x-i-1; j++)
+            if (arr[j] > arr[j+1])
+                swap(&arr[j], &arr[j+1]);
 }
 
-double getInserationSortTime(int n)
-{
-	int *data;
 
-	data = (int *)malloc(n * sizeof(int));
-	for (int i = 0; i < n; i++)
-		data[i] = rand();
+int main() {
+    for (int n = 50000; n <= 1000000; n+=50000)
+    {
+        printf("%d;%lf\n", n, getBubbleSortTime(n));
+    }
 
-	double start_time = omp_get_wtime();
+    return 0;
+}
+double getBubbleSortTime(int x) {
+    int *data;
 
-	InserationSort(data, n);
-	double stop_time = omp_get_wtime();
+    data = (int *) malloc(x * sizeof(int));
+    for (int i = 0; i < x; i++)
+        data[i] = rand();
+    double start_time = omp_get_wtime();
 
-	free(data);
+    bubbleSort(data, x);
+    double stop_time = omp_get_wtime();
 
-	return stop_time - start_time;
+    free(data);
+
+    return stop_time - start_time;
 }
