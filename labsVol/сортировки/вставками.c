@@ -1,79 +1,50 @@
 #include <stdio.h>
-
 #include <omp.h>
 #include <stdlib.h>
 
-double getQuickSortTime(int n);
+double getInserationSortTime(int n);
 
-void swap(int* a, int* b)
+void InserationSort(int arr[], int n)
 {
-	int t = *a;
-	*a = *b;
-	*b = t;
+    int i, j, temp;
+    for (i = 1; i < n; i++)
+    {
+        temp = arr[i];
+        for (j = i - 1; j >= 0; j--)
+        {
+            if (arr[j] < temp)
+                break;
+
+            arr[j + 1] = arr[j];
+            arr[j] = temp;
+        }
+    }
 }
-
-int partition(int arr[], int low, int high)
-{
-	int pivot = arr[high];
-	int i = (low - 1);
-
-	for (int j = low; j <= high - 1; j++)
-	{
-
-		if (arr[j] < pivot)
-		{
-			i++;
-			swap(&arr[i], &arr[j]);
-		}
-	}
-	swap(&arr[i + 1], &arr[high]);
-	return (i + 1);
-}
-
-void quickSort(int* arr, int low, int high)
-{
-	if (low < high)
-	{
-
-		int pi = partition(arr, low, high);
-
-		quickSort(arr, low, pi - 1);
-		quickSort(arr, pi + 1, high);
-	}
-}
-
-
-void printArray(int arr[], int size)
-{
-	int i;
-	for (i = 0; i < size; i++)
-		printf("%d ", arr[i]);
-	printf("n");
-}
-
 
 int main()
 {
-	for (int n = 100000; n <= 1000000; n += 100000)
-	{
-		printf("%d;%lf\n", n, getQuickSortTime(n));
-	}
+    for (int n = 10000; n <= 100000; n+=10000)
+    {
+        printf("%d;%lf\n", n, getInserationSortTime(n));
+    }
 
-	return 0;
+    return 0;
 }
-double getQuickSortTime(int n) {
-	int *data;
 
-	data = (int *)malloc(n * sizeof(int));
-	for (int i = 0; i < n; i++)
-		data[i] = rand();
+double getInserationSortTime(int n)
+{
+    int *data;
 
-	double start_time = omp_get_wtime();
+    data = (int *) malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++)
+        data[i] = rand();
 
-	quickSort(data, 0, n - 1);
-	double stop_time = omp_get_wtime();
+    double start_time = omp_get_wtime();
 
-	free(data);
+    InserationSort(data,n);
+    double stop_time = omp_get_wtime();
 
-	return stop_time - start_time;
+    free(data);
+
+    return stop_time - start_time;
 }
